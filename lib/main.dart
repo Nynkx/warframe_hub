@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import "dart:async";
 
-void main() {
+import 'api.dart';
+import 'cetus_cycle.dart';
+
+void main() async {
+  await APIHelper.api.fetchCetusCycle();
   runApp(MyApp());
 }
 
@@ -94,20 +99,12 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              'cetus',
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

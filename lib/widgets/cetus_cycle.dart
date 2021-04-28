@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:warframe_hub/api.dart';
 import 'package:warframe_hub/cetus_cycle.dart';
 import 'dart:async';
@@ -18,13 +19,14 @@ class CetusCycleWidget extends StatefulWidget {
 class _CetusCycleWidgetState extends State<CetusCycleWidget> {
   CountdownTimer _timer;
 
-  int timeInSeconds = 10;
+  int timeInSeconds = 0;
 
   void countdown() {
     setState(
       () {
         if (timeInSeconds < 1) {
           _timer.stop();
+          cc = APIHelper.api.fetchCetusCycle();
         } else {
           timeInSeconds -= 1;
         }
@@ -53,20 +55,37 @@ class _CetusCycleWidgetState extends State<CetusCycleWidget> {
         future: cc,
         builder: (BuildContext bc, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            widget.time = snapshot.data.timeLeft;
-            List<String> parts =
-                widget.time.replaceAll(RegExp(r"([hms])"), "").split(" ");
+            CetusCycle data = snapshot.data;
 
-            for (String part in parts) {
-              timeInSeconds += int.parse(part) * 60;
+            if (timeInSeconds < 1) {
+              widget.time = data.timeLeft;
+              List<String> parts =
+                  widget.time.replaceAll(RegExp(r"([hms])"), "").split(" ");
+
+              for (String part in parts) {
+                timeInSeconds += int.parse(part) * 60;
+              }
+              // timeInSeconds = 10;
+
+              _timer.start();
             }
-            print(widget.time);
-            _timer.start();
+
             return Column(
               children: [
-                Text("status: a"),
-                Text(
-                    "${timeInSeconds ~/ 3600}h:${timeInSeconds ~/ 60 % 60}m:${timeInSeconds % 60}s"),
+                Card(
+                  child: ListTile(
+                    leading: Icon(MdiIcons.moonWaningCrescent),
+                    title: Text('Cetus Cycle'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Status: ${data.isDay ? 'Day' : "Night"}"),
+                        Text("${!data.isDay ? 'Day' : "Night"} in " +
+                            "${timeInSeconds ~/ 3600}h:${timeInSeconds ~/ 60 % 60}m:${timeInSeconds % 60}s"),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             );
           }

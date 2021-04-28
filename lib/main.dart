@@ -92,12 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'cetus',
-            ),
-            CetusCycleWidget()
-          ],
+          children: <Widget>[CetusCycleWidget()],
         ),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.

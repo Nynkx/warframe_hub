@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:warframe_hub/api.dart';
 import 'package:warframe_hub/cetus_cycle.dart';
 import 'dart:async';
@@ -61,17 +62,45 @@ class _CetusCycleWidgetState extends State<CetusCycleWidget> {
               widget.time = data.timeLeft;
               List<String> parts =
                   widget.time.replaceAll(RegExp(r"([hms])"), "").split(" ");
-
-              for (String part in parts) {
-                timeInSeconds += int.parse(part) * 60;
+              print(parts);
+              if (parts.length == 3) {
+                for (String part in parts) {
+                  timeInSeconds += int.parse(part) * 60;
+                }
+              } else {
+                timeInSeconds = int.parse(parts[0]) * 60 + int.parse(parts[1]);
               }
               // timeInSeconds = 10;
+              print(timeInSeconds);
 
               _timer.start();
             }
 
             return Column(
               children: [
+                SfRadialGauge(
+                  title: GaugeTitle(
+                    text: "Cetus Cycle",
+                  ),
+                  axes: [
+                    RadialAxis(
+                        minimum: 0,
+                        maximum: data.isDay ? 6000 : 3000,
+                        showTicks: false,
+                        showLabels: false,
+                        startAngle: 180,
+                        endAngle: 0,
+                        radiusFactor: 0.7,
+                        pointers: [
+                          RangePointer(
+                            value: (data.isDay ? 6000 : 3000) -
+                                timeInSeconds.toDouble(),
+                            width: 0.1,
+                            sizeUnit: GaugeSizeUnit.factor,
+                          )
+                        ]),
+                  ],
+                ),
                 Card(
                   child: ListTile(
                     leading: Icon(MdiIcons.moonWaningCrescent),
